@@ -148,7 +148,7 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         
         st.metric("Crisis Harm Likelihood", f"{crisis_harm}% chance", f"Could reduce your goal by ~{crisis_impact_pct}%")
         
-        st.info("""
+        st.info(f """
         **What do these percentages mean?**  
         We ran **5,000 possible market scenarios** (12% avg return, 18% volatility).  
         The simulation now starts with the ₹{current_savings:,.0f} you have already saved.
