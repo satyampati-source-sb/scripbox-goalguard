@@ -77,18 +77,29 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         crisis_harm = int((100 - discipline_score) * 0.65)
         crisis_impact_pct = round((100 - discipline_score) / 100 * 22, 1)
         
+                # STRICTER PROMPT - no more hallucinated Scripbox features
         prompt = f"""
-        You are a friendly Scripbox behavioural coach.
-        User goal: {goal_desc}
+        You are a friendly and encouraging behavioural finance coach.
+
+        User's goal: {goal_desc}
         Discipline score: {discipline_score}/100
-        Base goal probability: {base_prob:.0f}%
+        Base probability: {base_prob:.0f}%
         Behaviour-adjusted probability: {behaviour_prob:.0f}%
         Crisis harm chance: {crisis_harm}%
-        Give a warm, encouraging 3-4 sentence explanation of their biases and one actionable "Behaviour Upgrade" tip they can do inside Scripbox.
-        Use simple language, no jargon.
-        """
-        ai_response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt).text
+
+        Give a warm, short (maximum 3-4 sentences) response.
+        Focus ONLY on general investment behaviour, emotions, habits and mindset.
         
+        IMPORTANT RULES:
+        - NEVER mention or suggest any specific features, tools, buttons, or actions inside the Scripbox app.
+        - NEVER invent any product features.
+        - Keep advice very general and high-level (examples: "stick to your monthly plan", "avoid checking too often", "focus on the long term", "celebrate small wins", etc.).
+        - Stay positive and encouraging.
+
+        Use simple, friendly language.
+        """
+
+        ai_response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt).text
         st.success("✅ Your GoalGuard Report")
         st.metric("Your Discipline Score", f"{discipline_score}/100")
         
