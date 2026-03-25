@@ -92,24 +92,22 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         crisis_harm = int((100 - discipline_score) * 0.65)
         crisis_impact_pct = round((100 - discipline_score) / 100 * 22, 1)
         
-        # STRICT prompt (no feature hallucination)
         prompt = f"""
         You are a friendly and encouraging behavioural finance coach.
 
         User's goal: {goal_desc}
-        Already saved: ₹{current_savings:,.0f}
         Discipline score: {discipline_score}/100
         Base probability: {base_prob:.0f}%
         Behaviour-adjusted probability: {behaviour_prob:.0f}%
         Crisis harm chance: {crisis_harm}%
 
-        Give a warm, short (maximum 3-4 sentences) response.
-        Focus ONLY on general investment behaviour, emotions, habits and mindset.
+        Give a warm, but detailed response based on the metrics shared by the User.
+        Focus on general investment behaviour, emotions, habits and mindset and suggest corrective actions.
         
         IMPORTANT RULES:
-        - NEVER mention or suggest any specific features, tools, buttons, or actions inside any app.
+        - NEVER mention or suggest any specific features, tools, buttons, or actions inside the Scripbox app.
         - NEVER invent any product features.
-        - Keep advice very general and high-level.
+        - Keep advice  high-level (examples: "stick to your monthly plan", "avoid checking too often", "focus on the long term", "celebrate small wins", etc.).
         - Stay positive and encouraging.
 
         Use simple, friendly language.
