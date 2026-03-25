@@ -4,19 +4,39 @@ import plotly.graph_objects as go
 from google import genai
 import os
 
-os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
-client = genai.Client()
-
+# ====================== PASSWORD GATE ======================
 st.set_page_config(page_title="Scripbox GoalGuard", page_icon="🛡️", layout="centered")
 
 st.title("🛡️ Scripbox GoalGuard")
+
+# Change this password to anything you like
+PASSWORD = "hackathon2026"   # ←←← CHANGE THIS TO YOUR OWN PASSWORD
+
+if "password_correct" not in st.session_state:
+    st.session_state.password_correct = False
+
+if not st.session_state.password_correct:
+    st.markdown("### 🔐 Enter password to access the tool")
+    entered_password = st.text_input("Password", type="password")
+    if st.button("Unlock"):
+        if entered_password == PASSWORD:
+            st.session_state.password_correct = True
+            st.rerun()
+        else:
+            st.error("❌ Wrong password")
+    st.stop()   # stops the rest of the app from loading
+# ===========================================================
+
+# Only people who know the password will see everything below
+os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
+client = genai.Client()
+
 st.markdown("**See how your behaviour affects your goal achievement** — 100% private, no portfolio upload needed.")
 
 # ================== GOAL INPUT SECTION ==================
 st.header("1️⃣ Your Goal")
 goal_desc = st.text_input("Describe your goal in plain English", value="Rs 3 Crore for my retirement in 10 years")
 
-# Target amount (Crores / Lakhs)
 col_unit, col_val = st.columns([1, 3])
 with col_unit:
     unit = st.selectbox("Target unit", options=["Crores", "Lakhs"], index=0)
@@ -33,7 +53,7 @@ st.success(f"**Target: ₹{target_amount:,.0f}**")
 years = st.number_input("Time horizon (years)", value=10, min_value=1, max_value=30)
 monthly_sip = st.number_input("Planned monthly SIP (₹)", value=122000, min_value=1000, step=1000)
 
-# NEW: Current savings (same friendly Crores/Lakhs dropdown)
+# Current savings
 st.subheader("💰 Amount already saved for this goal")
 col_unit2, col_val2 = st.columns([1, 3])
 with col_unit2:
@@ -49,7 +69,7 @@ with col_val2:
 st.success(f"**Already saved: ₹{current_savings:,.0f}**")
 # ========================================================
 
-# Behaviour quiz
+# Behaviour quiz (unchanged)
 st.header("2️⃣ Your Behaviour Profile (8 quick questions)")
 st.caption("Be honest — this is what makes the magic happen!")
 
@@ -78,7 +98,7 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         for i in range(n_sim):
             r_base = np.random.normal(base_return, vol, years)
             r_behave = r_base - behavioural_drag
-            corpus_base = float(current_savings)      # ← NEW: start from existing savings
+            corpus_base = float(current_savings)
             corpus_behave = float(current_savings)
             for yr in range(years):
                 corpus_base = (corpus_base + monthly_sip * 12) * (1 + r_base[yr])
@@ -96,6 +116,7 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         You are a friendly and encouraging behavioural finance coach.
 
         User's goal: {goal_desc}
+        Already saved: ₹{current_savings:,.0f}
         Discipline score: {discipline_score}/100
         Base probability: {base_prob:.0f}%
         Behaviour-adjusted probability: {behaviour_prob:.0f}%
@@ -103,11 +124,11 @@ if st.button("🚀 Analyse My Goal", type="primary"):
 
         Give a warm, but detailed response based on the metrics shared by the User.
         Focus on general investment behaviour, emotions, habits and mindset and suggest corrective actions.
-        
+                
         IMPORTANT RULES:
-        - NEVER mention or suggest any specific features, tools, buttons, or actions inside the Scripbox app.
+        - NEVER mention or suggest any specific features, tools, buttons, or actions inside any app.
         - NEVER invent any product features.
-        - Keep advice  high-level (examples: "stick to your monthly plan", "avoid checking too often", "focus on the long term", "celebrate small wins", etc.).
+        - Keep advice very general and high-level.
         - Stay positive and encouraging.
 
         Use simple, friendly language.
@@ -115,7 +136,6 @@ if st.button("🚀 Analyse My Goal", type="primary"):
 
         ai_response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt).text
         
-        # Results
         st.success("✅ Your GoalGuard Report")
         st.metric("Your Discipline Score", f"{discipline_score}/100")
         
