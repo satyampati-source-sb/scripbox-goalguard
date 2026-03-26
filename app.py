@@ -134,7 +134,7 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         Use simple, friendly language.
         """
 
-        ai_response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt).text
+        ai_response = client.models.generate_content(model="gemini-2.5-flash-lite", contents=prompt).text
         
         st.success("✅ Your GoalGuard Report")
         st.metric("Your Discipline Score", f"{discipline_score}/100")
