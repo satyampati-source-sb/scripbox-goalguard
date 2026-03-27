@@ -3,6 +3,7 @@ import numpy as np
 import plotly.graph_objects as go
 from google import genai
 import os
+from google.genai.errors import ClientError
 
 # ====================== PASSWORD GATE ======================
 st.set_page_config(page_title="Scripbox GoalGuard", page_icon="🛡️", layout="centered")
@@ -111,7 +112,7 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         
         crisis_harm = int((100 - discipline_score) * 0.65)
         crisis_impact_pct = round((100 - discipline_score) / 100 * 22, 1)
-        
+       try: 
         prompt = f"""
         You are a friendly and encouraging behavioural finance coach.
 
@@ -135,6 +136,14 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         """
 
         ai_response = client.models.generate_content(model="gemini-2.5-flash-lite", contents=prompt).text
+        except ClientError as e:
+            if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e) or "quota" in str(e).lower():
+                ai_response = "⚠️ Gemini API quota limit reached for today (free tier). Please try again tomorrow or create a new API key from a new Google Cloud project."
+            else:
+                ai_response = f"⚠️ AI coach temporarily unavailable: {str(e)[:100]}..."
+        except Exception as e:
+            ai_response = "⚠️ The AI coach is temporarily unavailable. However, your probabilities and chart are still shown above."
+        # =====================================
         
         st.success("✅ Your GoalGuard Report")
         st.metric("Your Discipline Score", f"{discipline_score}/100")
