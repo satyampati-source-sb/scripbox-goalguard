@@ -112,7 +112,7 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         
         crisis_harm = int((100 - discipline_score) * 0.65)
         crisis_impact_pct = round((100 - discipline_score) / 100 * 22, 1)
-       try: 
+    try: 
         prompt = f"""
         You are a friendly and encouraging behavioural finance coach.
 
