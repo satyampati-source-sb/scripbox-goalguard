@@ -121,8 +121,9 @@ if st.button("🚀 Analyse My Goal", type="primary"):
             Base goal probability: {base_prob:.0f}%
             Behaviour-adjusted probability: {behaviour_prob:.0f}%
             Crisis harm chance: {crisis_harm}%
-            Give a warm, encouraging 3-4 sentence explanation of their biases and one actionable general tip.
-            Focus ONLY on general behaviour, emotions and mindset. Never mention specific app features.
+            Give a warm, and encouraging explanation of their biases and actionable tips. Give it in a detailed way yet actionable.
+            Ensure you explain the probabilities clearly in a bullet point format.
+            Focus on general behaviour, emotions and mindset. Never mention specific app features.
             Use simple, friendly language.
             """
             ai_response = client.models.generate_content(model="gemini-2.5-flash-lite", contents=prompt).text
