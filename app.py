@@ -112,31 +112,21 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         
         crisis_harm = int((100 - discipline_score) * 0.65)
         crisis_impact_pct = round((100 - discipline_score) / 100 * 22, 1)
-    try: 
-        prompt = f"""
-        You are a friendly and encouraging behavioural finance coach.
-
-        User's goal: {goal_desc}
-        Already saved: ₹{current_savings:,.0f}
-        Discipline score: {discipline_score}/100
-        Base probability: {base_prob:.0f}%
-        Behaviour-adjusted probability: {behaviour_prob:.0f}%
-        Crisis harm chance: {crisis_harm}%
-
-        Give a warm, but detailed response based on the metrics shared by the User.
-        Focus on general investment behaviour, emotions, habits and mindset and suggest corrective actions.
-                
-        IMPORTANT RULES:
-        - NEVER mention or suggest any specific features, tools, buttons, or actions inside any app.
-        - NEVER invent any product features.
-        - Keep advice very general and high-level.
-        - Stay positive and encouraging.
-
-        Use simple, friendly language.
-        """
-
-        ai_response = client.models.generate_content(model="gemini-2.5-flash-lite", contents=prompt).text
-    except ClientError as e:
+            # === AI CALL WITH ERROR HANDLING (Original GoalGuard) ===
+        try:
+            prompt = f"""
+            You are a friendly Scripbox behavioural coach.
+            User goal: {goal_desc}
+            Discipline score: {discipline_score}/100
+            Base goal probability: {base_prob:.0f}%
+            Behaviour-adjusted probability: {behaviour_prob:.0f}%
+            Crisis harm chance: {crisis_harm}%
+            Give a warm, encouraging 3-4 sentence explanation of their biases and one actionable general tip.
+            Focus ONLY on general behaviour, emotions and mindset. Never mention specific app features.
+            Use simple, friendly language.
+            """
+            ai_response = client.models.generate_content(model="gemini-2.5-flash-lite", contents=prompt).text
+        except ClientError as e:
             if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e) or "quota" in str(e).lower():
                 ai_response = "⚠️ Gemini API quota limit reached for today (free tier). Please try again tomorrow or create a new API key from a new Google Cloud project."
             else:
