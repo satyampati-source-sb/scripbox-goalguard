@@ -136,7 +136,7 @@ if st.button("🚀 Analyse My Goal", type="primary"):
         """
 
         ai_response = client.models.generate_content(model="gemini-2.5-flash-lite", contents=prompt).text
-        except ClientError as e:
+    except ClientError as e:
             if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e) or "quota" in str(e).lower():
                 ai_response = "⚠️ Gemini API quota limit reached for today (free tier). Please try again tomorrow or create a new API key from a new Google Cloud project."
             else:
